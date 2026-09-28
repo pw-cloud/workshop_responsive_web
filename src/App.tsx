@@ -79,11 +79,11 @@ export default function App() {
   };
 
   const found = route.page === 'lesson' ? findLesson(route.lessonId ?? '') : undefined;
+  const currentLessonId = found?.lesson.id;
 
   useEffect(() => {
-    if (found) setLastLessonId(found.lesson.id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [found?.lesson.id]);
+    if (currentLessonId) setLastLessonId(currentLessonId);
+  }, [currentLessonId, setLastLessonId]);
 
   // Fokus bei Seitenwechsel auf den Hauptinhalt setzen (Screenreader & Tastatur)
   useEffect(() => {
