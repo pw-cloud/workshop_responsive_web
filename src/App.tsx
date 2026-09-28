@@ -29,6 +29,7 @@ export default function App() {
   const [fontLevel, setFontLevel] = useLocalStorage<number>('kurs-schrift', 1);
   const [highContrast, setHighContrast] = useLocalStorage<boolean>('kurs-kontrast', false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const firstLessonId = modules[0]?.lessons[0]?.id;
 
   const completed = useMemo(() => new Set(completedArr), [completedArr]);
 
@@ -56,7 +57,11 @@ export default function App() {
   const goPage = (page: Page) => {
     setSidebarOpen(false);
     if (page === 'lesson') {
-      const target = lastLessonId ?? modules[0].lessons[0].id;
+      const target = lastLessonId ?? firstLessonId;
+      if (!target) {
+        window.location.hash = '#/';
+        return;
+      }
       window.location.hash = `#/lektion/${target}`;
     } else {
       window.location.hash = page === 'home' ? '#/' : `#/${page}`;
@@ -64,6 +69,7 @@ export default function App() {
   };
 
   const goLesson = (id: string) => {
+    setSidebarOpen(false);
     setLastLessonId(id);
     window.location.hash = `#/lektion/${id}`;
   };
@@ -117,9 +123,13 @@ export default function App() {
             ) : (
               <div className="p-10 text-center">
                 <p className="mb-4 text-xl">Diese Lektion wurde nicht gefunden.</p>
-                <button type="button" onClick={() => goLesson(modules[0].lessons[0].id)} className="rounded-xl bg-indigo-700 px-5 py-3 font-bold text-white">
-                  Zur ersten Lektion
-                </button>
+                {firstLessonId ? (
+                  <button type="button" onClick={() => goLesson(firstLessonId)} className="rounded-xl bg-indigo-700 px-5 py-3 font-bold text-white">
+                    Zur ersten Lektion
+                  </button>
+                ) : (
+                  <p>Aktuell sind keine Lektionen verfügbar.</p>
+                )}
               </div>
             )}
           </main>
