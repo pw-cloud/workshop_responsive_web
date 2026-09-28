@@ -54,13 +54,13 @@ export default function App() {
   }, [route.page]);
 
   const goPage = (page: Page) => {
+    setSidebarOpen(false);
     if (page === 'lesson') {
       const target = lastLessonId ?? modules[0].lessons[0].id;
       window.location.hash = `#/lektion/${target}`;
     } else {
       window.location.hash = page === 'home' ? '#/' : `#/${page}`;
     }
-    setSidebarOpen(false);
   };
 
   const goLesson = (id: string) => {
